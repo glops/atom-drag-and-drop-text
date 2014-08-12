@@ -1,0 +1,15 @@
+{
+  "name": "drag-and-drop-text",
+  "main": "./lib/drag-and-drop-text",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "activationEvents": [],
+  "repository": "https://github.com/atom/drag-and-drop-text",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "emissary": "1.x"
+  }
+}
