@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "A short description of your package",
   "activationEvents": [],
-  "repository": "https://github.com/atom/drag-and-drop-text",
+  "repository": "https://github.com/glops/atom-drag-and-drop-text",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"

@@ -17,6 +17,9 @@ module.exports =
     mouseStart = null
     mouseEnd   = null
     columnWidth  = null
+    clickOnSelection = false
+    dragText = ""
+    selectionRange = null
 
     calculateMonoSpacedCharacterWidth = =>
       if scrollView
@@ -41,10 +44,25 @@ module.exports =
       console.log "X : #{e.pageX} - Y : #{e.pageY}"
       selection = editorView.find('.selection div')
       console.log selection
-      if (selection.offset()?)
-        if selection.offset().top<e.pageY<selection.offset().top+selection.height() and selection.offset().left<e.pageX<selection.offset().left+selection.width()
-          console.log "ok !"
-      if altDown
+      clickOnSelection = false
+      dragText = ""
+
+      selection.each (index, element) =>
+        selection_part = editorView.find(element)
+        console.log selection_part
+        if (selection_part.offset()?)
+          if selection_part.offset().top<e.pageY<selection_part.offset().top+selection_part.height() and selection_part.offset().left<e.pageX<selection_part.offset().left+selection_part.width()
+            clickOnSelection = true
+            dragText = editor.getSelectedText()
+            selectionRange = editor.getSelectedBufferRange()
+            console.log selectionRange
+
+      if clickOnSelection
+        mouseStart  = overflowableScreenPositionFromMouseEvent(e)
+        mouseEnd    = mouseStart
+        e.preventDefault()
+        return false
+      else if altDown
         columnWidth = calculateMonoSpacedCharacterWidth()
         mouseStart  = overflowableScreenPositionFromMouseEvent(e)
         mouseEnd    = mouseStart
@@ -52,15 +70,26 @@ module.exports =
         return false
 
     onMouseUp = (e) =>
+      if mouseStart and clickOnSelection
+        console.log mouseEnd
+        editor.setTextInBufferRange(editor.getCursorBufferPosition(), editor.getTextInBufferRange(selectionRange))
       mouseStart = null
       mouseEnd = null
+      clickOnSelection = false
+
 
     onMouseMove = (e) =>
-      if mouseStart
+      if mouseStart and altDown
         mouseEnd = overflowableScreenPositionFromMouseEvent(e)
         selectBoxAroundCursors()
         e.preventDefault()
         return false
+      else if mouseStart and clickOnSelection
+        mouseEnd = overflowableScreenPositionFromMouseEvent(e)
+        editor.setCursorScreenPosition(mouseEnd)
+        e.preventDefault()
+        return false
+
 
     onMouseleave = (e) =>
       if altDown
